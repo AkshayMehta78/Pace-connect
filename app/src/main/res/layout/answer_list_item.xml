@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:layout_width="match_parent"
+    android:layout_margin="10dp"
+    android:elevation="4dp"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20sp"
+    android:paddingRight="20sp"
+    android:paddingTop="20sp"
+    android:paddingBottom="12dp">
 
     <TextView
         android:id="@+id/text_answer_string"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="@color/black_87"
         tools:text="Here's my response..."/>
 
     <ImageView
@@ -23,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_answer_string"
+        android:visibility="gone"
         android:layout_toRightOf="@id/image_answer_user_image"
         tools:text="30 votes"/>
 
@@ -34,9 +44,4 @@
         android:layout_alignParentRight="true"
         tools:src="@drawable/ic_mood_black_24dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentEnd="true"
-        android:background="@android:color/darker_gray"/>
 </RelativeLayout>

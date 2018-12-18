@@ -13,6 +13,7 @@
         android:id="@+id/toolbar_single_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"/>
 
@@ -27,6 +28,9 @@
         android:id="@+id/text_single_question_string"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="@color/black_87"
+        android:padding="@dimen/default_padding"
         tools:text="What is your question?"/>
 
     <TextView
@@ -39,6 +43,7 @@
         android:id="@+id/text_single_question_num_answers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         tools:text="5 answers"/>
 
     <ImageView

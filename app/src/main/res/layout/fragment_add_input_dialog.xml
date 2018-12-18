@@ -1,24 +1,50 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/add_input"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="match_parent"
               android:layout_gravity="center"
-              android:padding="@dimen/default_padding"
               android:orientation="vertical"  >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_padding"
+        android:layout_gravity="center"
+        android:textColor="@color/black_87"
+        android:textSize="@dimen/text_size_18"
+        android:text="Add a Question"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_below="@+id/title"
+        android:layout_height="1dp"
+        android:background="@color/black_87"></View>
 
     <EditText
         android:id="@+id/field_add_input"
+        android:layout_below="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:minLines="4"
+        android:maxLines="8"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/default_padding"
+        android:gravity="top"
+        android:hint="Example: What are the fees options available for International students?"
         android:imeOptions="actionDone" />
 
-    <TextView
-        android:id="@+id/text_sample_input"
+    <!-- Login Button -->
+    <android.support.v7.widget.AppCompatButton
+        android:layout_below="@+id/field_add_input"
+        android:id="@+id/postButton"
+        style="@style/PaddingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/default_padding"
         android:layout_gravity="center"
-        android:text="Example: What does it feel like to win an Olympic medal?"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/action_post"/>
 
-</LinearLayout>
+
+</RelativeLayout>

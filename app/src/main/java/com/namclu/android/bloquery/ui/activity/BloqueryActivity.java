@@ -256,6 +256,8 @@ public class BloqueryActivity extends AppCompatActivity
             mQuestionsReference.child(key).setValue(question);
 
             Toast.makeText(this, "Question added!", Toast.LENGTH_SHORT).show();
+
+            onRestart();
         }
     }
 

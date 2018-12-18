@@ -1,9 +1,12 @@
 package com.namclu.android.bloquery.ui.fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,8 @@ import com.namclu.android.bloquery.R;
 public class AddInputDialogFragment extends DialogFragment implements TextView.OnEditorActionListener {
 
     private EditText mEditText;
+    private TextView mTitle;
+    private AppCompatButton postButton;
 
     // Listener interface with a method passing back data result.
     public interface AddInputDialogListener {
@@ -52,9 +57,15 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         // Get field from view
         mEditText = (EditText) view.findViewById(R.id.field_add_input);
+        mTitle = (TextView) view.findViewById(R.id.title);
+
+        mTitle.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Add a Question ":"Add a Response");
+        postButton = (AppCompatButton) view.findViewById(R.id.postButton);
+
+        postButton.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Post Question ":"Post Response");
+
         // Fetch arguments from bundle and set question
         String title = getArguments().getString("question", "Enter question");
         getDialog().setTitle(title);
@@ -66,6 +77,18 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
 
         // Setup a callback when the "Done" button is pressed on keyboard
         mEditText.setOnEditorActionListener(this);
+
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Return input text back to activity through the implemented listener
+                AddInputDialogListener listener = (AddInputDialogListener) getActivity();
+                listener.onFinishAddInput(mEditText.getText().toString());
+
+                // Close the dialog and return back to the parent activity
+                dismiss();
+            }
+        });
     }
 
     // Fires when the "Done" button is pressed
@@ -81,5 +104,18 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null)
+        {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
     }
 }

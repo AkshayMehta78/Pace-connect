@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bloquery</string>
+    <string name="app_name">Pace Connect</string>
     <string name="title_sign_up">Sign Up</string>
     <string name="title_login">Log In</string>
     <string name="title_bloquery">Bloquery</string>
@@ -43,4 +43,5 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="title_user_profile">User Profile</string>
     <string name="title_single_question">Single Question</string>
+    <string name="action_post">Post Question</string>
 </resources>
