@@ -22,19 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.namclu.android.bloquery.R;
 import com.namclu.android.bloquery.api.model.User;
 
-/**
- * Created by namlu on 03-Aug-16.
- * <p>
- * SignUpActivity.java handles the task of signing up and creating a user account for a new user.
- * <p>
- * Before:
- * User provides a Name, Email and a Password
- * After:
- * If successful, a user account will be create and user will be logged in and
- * presented with the Main screen
- * Other:
- * If user already has an account, they can skip to Login screen
- */
+
 public class SignUpActivity extends AppCompatActivity {
 
     private static final String TAG = SignUpActivity.class.getSimpleName();

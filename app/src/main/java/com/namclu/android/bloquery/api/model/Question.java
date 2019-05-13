@@ -3,12 +3,6 @@ package com.namclu.android.bloquery.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by namlu on 05-Mar-17.
- *
- * Question class represents a single Question object submitted by a user in Bloquery.
- *
- */
 
 public class Question {
 

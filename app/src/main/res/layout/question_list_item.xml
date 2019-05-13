@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_18"
         android:textColor="@color/black_87"
+        android:paddingBottom="20dp"
         tools:text="What is your questionString?"/>
 
     <TextView
@@ -35,6 +36,15 @@
         android:layout_below="@id/text_question_string"
         android:layout_alignParentRight="true"
         tools:src="@android:drawable/star_big_on"/>
+
+    <TextView
+        android:id="@+id/noOfAnswersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/text_question_string"
+        android:layout_below="@+id/image_question_user_image"
+        android:visibility="gone"
+        tools:text="Answers:" />
 
     <TextView
         android:id="@+id/text_question_time_stamp"

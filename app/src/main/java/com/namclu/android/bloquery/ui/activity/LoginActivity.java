@@ -3,6 +3,7 @@ package com.namclu.android.bloquery.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,27 +11,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.cloudinary.Util;
+import com.cloudinary.android.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.namclu.android.bloquery.PaceSharedPreference;
 import com.namclu.android.bloquery.R;
+import com.namclu.android.bloquery.Utility;
 
-/**
- * Created by namlu on 30-Jul-16.
- * <p>
- * LoginActivity.java handles logging in a user who already has an account.
- * <p>
- * Before:
- * User provides their account Email and Password to login
- * After:
- * If successful, user is logged into their account and is present with Main screen
- * Other:
- * If user doesn't have an account, they can be taken to SignUp screen
- */
+
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int REQUEST_SIGNUP = 0;
@@ -45,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Create reference to mAuthStateListener
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private TextView forgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         // Buttons
         mLoginButton = (Button) findViewById(R.id.button_login);
         mCreateAccountLink = (TextView) findViewById(R.id.link_create_account);
+        forgotPassword = (TextView) findViewById(R.id.forgotPassword);
 
         // Initialize Firebase mAuth object
         mAuth = FirebaseAuth.getInstance();
@@ -71,8 +66,11 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
+                    new PaceSharedPreference(getApplicationContext()).setBooleanValue("isLoggedIn",true);
+
                     // Send user to main activity
                     Intent intent = new Intent(LoginActivity.this, BloqueryActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 
                     // Call to destroy an activity
@@ -89,9 +87,12 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // If successful, take user to initial screen.
-                // Otherwise show an error
-                signIn(mInputEmail.getText().toString(), mInputPassword.getText().toString());
+                Utility.hideKeyboard(LoginActivity.this);
+                if(mLoginButton.getTag() == "FP"){
+                    forgotPasswordEmail();
+                }else{
+                    signIn(mInputEmail.getText().toString(), mInputPassword.getText().toString());
+                }
             }
         });
 
@@ -103,6 +104,18 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLoginButton.setTag("FP");
+                mLoginButton.setText("Forgot Password");
+                mInputPassword.setVisibility(View.GONE);
+                mCreateAccountLink.setVisibility(View.GONE);
+                forgotPassword.setVisibility(View.GONE);
             }
         });
     }
@@ -143,11 +156,10 @@ public class LoginActivity extends AppCompatActivity {
                         // and logic to handle the signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
+                            Utility.showSnackBar(findViewById(R.id.parentLayout),getString(R.string.auth_failed));
+
                         } else {
-                            Toast.makeText(LoginActivity.this,
-                                    "Welcome back " + mAuth.getCurrentUser().getEmail(),
-                                    Toast.LENGTH_SHORT).show();
+                            Utility.showSnackBar(findViewById(R.id.parentLayout),"Welcome back " + mAuth.getCurrentUser().getEmail());
                         }
 
                         // @Todo
@@ -189,5 +201,23 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    public void forgotPasswordEmail(){
+        String email = mInputEmail.getText().toString();
+        if (!TextUtils.isEmpty(email)) {
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                // finish();
+                                Utility.showSnackBar(findViewById(R.id.parentLayout),getString(R.string.email_sent));
+                            }else{
+                                Utility.showSnackBar(findViewById(R.id.parentLayout),getString(R.string.invalid_email));
+                            }
+                        }
+                    });
+        }
     }
 }

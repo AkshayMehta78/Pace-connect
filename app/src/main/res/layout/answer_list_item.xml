@@ -21,27 +21,11 @@
         tools:text="Here's my response..."/>
 
     <ImageView
-        android:id="@+id/image_answer_user_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_answer_string"
-        tools:src="@android:drawable/star_big_on"/>
-
-    <TextView
-        android:id="@+id/text_number_of_up_votes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_answer_string"
-        android:visibility="gone"
-        android:layout_toRightOf="@id/image_answer_user_image"
-        tools:text="30 votes"/>
-
-    <ImageButton
-        android:id="@+id/button_up_vote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_answer_string"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        tools:src="@drawable/ic_mood_black_24dp"/>
-
+        android:id="@+id/overFlowMenu"
+        android:padding="10dp"
+        android:layout_below="@+id/text_answer_string"
+        android:src="@drawable/ic_overflow"/>
 </RelativeLayout>

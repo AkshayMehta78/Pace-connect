@@ -7,12 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,16 +27,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.namclu.android.bloquery.PaceSharedPreference;
 import com.namclu.android.bloquery.R;
 import com.namclu.android.bloquery.api.model.Question;
 import com.namclu.android.bloquery.ui.adapter.QuestionAdapter;
 import com.namclu.android.bloquery.ui.fragment.AddInputDialogFragment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by namlu on 30-Jul-16.
- * <p>
  * BloqueryActivity.java is the default main screen of the app.
  */
 public class BloqueryActivity extends AppCompatActivity
@@ -62,6 +68,9 @@ public class BloqueryActivity extends AppCompatActivity
     // Use Navigation options
     private NavigationView mNavigationView;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +95,12 @@ public class BloqueryActivity extends AppCompatActivity
         // Set the layout, animator, and adapter for RecyclerView
         mQueryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mQueryRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mQueryRecyclerView.setHasFixedSize(true);//every item of the RecyclerView has a fix size
         mQueryRecyclerView.setAdapter(mQuestionAdapter);
 
         // Initialise database;
         mQuestionsReference = FirebaseDatabase.getInstance().getReference("questions");
+
 
         // Setup event listener
         mQuestionsReference.addChildEventListener(this);
@@ -119,6 +130,7 @@ public class BloqueryActivity extends AppCompatActivity
         // Initialise NavigationView and set Listener
         mNavigationView = (NavigationView) findViewById(R.id.navigation_items_bloquery);
         mNavigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -183,6 +195,8 @@ public class BloqueryActivity extends AppCompatActivity
             Intent intent = new Intent(this, SignUpActivity.class);
             startActivity(intent);
             finish();
+
+            new PaceSharedPreference(this).setBooleanValue("isLoggedIn",false);
         }
         return true;
     }
@@ -266,4 +280,5 @@ public class BloqueryActivity extends AppCompatActivity
         AddInputDialogFragment addInputDialogFragment = AddInputDialogFragment.newInstance("Ask a question");
         addInputDialogFragment.show(fm, TAG);
     }
+
 }

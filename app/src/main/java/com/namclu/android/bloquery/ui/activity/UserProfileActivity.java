@@ -21,11 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by namlu on 15-April-17.
- * <p>
- * UserProfileActivity.java presents user with their profile information.
- */
+
 public class UserProfileActivity extends AppCompatActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1;

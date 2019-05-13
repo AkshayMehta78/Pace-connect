@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -25,6 +26,9 @@ import com.namclu.android.bloquery.api.model.Answer;
 import com.namclu.android.bloquery.ui.adapter.AnswerAdapter;
 import com.namclu.android.bloquery.ui.fragment.AddInputDialogFragment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SingleQuestionActivity extends AppCompatActivity implements
         ChildEventListener,
         AddInputDialogFragment.AddInputDialogListener {
@@ -39,7 +43,10 @@ public class SingleQuestionActivity extends AppCompatActivity implements
     private AnswerAdapter mAnswerAdapter;
 
     private DatabaseReference mAnswersReference;
+    private DatabaseReference mQuestionReference;
+
     private FirebaseUser mCurrentUser;
+    private Long numberOfAnswers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +62,40 @@ public class SingleQuestionActivity extends AppCompatActivity implements
         String questionId = getIntent().getStringExtra("question_id_key");
 
         // Initialise Views
-        TextView userEmail = (TextView) findViewById(R.id.text_single_question_user_email);
         mQuestionString = (TextView) findViewById(R.id.text_single_question_string);
-        TextView timeStamp = (TextView) findViewById(R.id.text_single_question_time_stamp);
-        TextView numAnswers = (TextView) findViewById(R.id.text_single_question_num_answers);
-        ImageView userImage = (ImageView) findViewById(R.id.image_single_question_user_image);
 
         // Initialise Firebase stuff
+        mQuestionReference = FirebaseDatabase.getInstance().getReference("questions").child(questionId);
+        mQuestionReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equalsIgnoreCase("numberOfAnswers")){
+                    numberOfAnswers = (Long)dataSnapshot.getValue();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         mAnswersReference = FirebaseDatabase.getInstance().getReference("answers").child(questionId);
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -69,7 +103,7 @@ public class SingleQuestionActivity extends AppCompatActivity implements
         mAnswersReference.addChildEventListener(this);
 
         /* RecyclerView stuff */
-        mAnswerAdapter = new AnswerAdapter();
+        mAnswerAdapter = new AnswerAdapter(this);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_answers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -92,7 +126,12 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        showEditDialog();
+
+        if(item.getItemId() == R.id.action_delete){
+            removeQuestion();
+        }else{
+            showEditDialog();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -138,12 +177,35 @@ public class SingleQuestionActivity extends AppCompatActivity implements
             mAnswersReference.child(key).setValue(answer);
 
             Toast.makeText(this, "Answer added!", Toast.LENGTH_SHORT).show();
+
+            updateAnswerCountInQuestion();
         }
+    }
+
+    private void updateAnswerCountInQuestion() {
+        numberOfAnswers = numberOfAnswers + 1;
+        Map<String,Object> taskMap = new HashMap<String,Object>();
+        taskMap.put("numberOfAnswers", numberOfAnswers);
+        mQuestionReference.updateChildren(taskMap);
     }
 
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         AddInputDialogFragment addInputDialogFragment = AddInputDialogFragment.newInstance("Add an answer");
         addInputDialogFragment.show(fm, TAG);
+    }
+
+
+    public void removeAnswer(Answer answer) {
+        String questionId = getIntent().getStringExtra("question_id_key");
+        DatabaseReference answerReference = FirebaseDatabase.getInstance().getReference("answers").child(questionId);
+        answerReference.child(answer.getAnswerId()).removeValue();
+    }
+
+
+
+    private void removeQuestion() {
+        mQuestionReference.removeValue();
+        finish();
     }
 }

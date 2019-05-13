@@ -20,6 +20,7 @@
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"/>
 
+
         <!-- Main content view -->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_bloquery"
@@ -28,7 +29,6 @@
             android:textSize="26sp"
             android:divider="@null"
             android:dividerHeight="0dp"/>
-
     </LinearLayout>
 
     <!-- Navigation drawer -->

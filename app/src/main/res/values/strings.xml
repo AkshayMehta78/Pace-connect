@@ -44,4 +44,10 @@
     <string name="title_user_profile">User Profile</string>
     <string name="title_single_question">Single Question</string>
     <string name="action_post">Post Question</string>
+    <string name="forgotpassword">Forgot password?</string>
+    <string name="email_sent">Forgot password email sent</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="action_edit">Edit Answer</string>
+    <string name="action_delete">Delete Answer</string>
+    <string name="action_delete_ques">Delete Question</string>
 </resources>

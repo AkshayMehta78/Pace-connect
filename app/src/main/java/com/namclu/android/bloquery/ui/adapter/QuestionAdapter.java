@@ -1,6 +1,7 @@
 package com.namclu.android.bloquery.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by namlu on 05-Mar-17.
- *
- * {@link QuestionAdapter} is an {@link RecyclerView.Adapter} that can provide the layout for each list item
- * based on a data source, which is a list of {@link Question} objects.
- */
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionAdapterViewHolder> {
 
@@ -79,7 +74,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     class QuestionAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Reference to Question items
-        TextView questionString;
+        TextView questionString,noOfAnswersTextView;
         TextView timeStamp;
         TextView numAnswers;
         ImageView userImage;
@@ -93,7 +88,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             timeStamp = (TextView) itemView.findViewById(R.id.text_question_time_stamp);
             numAnswers = (TextView) itemView.findViewById(R.id.text_question_number_of_answers);
             userImage = (ImageView) itemView.findViewById(R.id.image_question_user_image);
-
+            noOfAnswersTextView = itemView.findViewById(R.id.noOfAnswersTextView);
             itemView.setOnClickListener(this);
         }
 
@@ -104,7 +99,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             questionString.setText(question.getQuestionString());
             timeStamp.setText("Submitted: " + formatDate(new Date(question.getTimeStamp())));
             numAnswers.setText("Number of answers: " + question.getNumberOfAnswers());
-            //userImage.setImageResource(question.getUserImageResId());
+            noOfAnswersTextView.setText("Answers : "+ question.getNumberOfAnswers());
         }
 
         // Return a formatted date string (i.e. 1 Jan, 2000 ) from a Date object.

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.namclu.android.bloquery.PaceSharedPreference;
 import com.namclu.android.bloquery.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -13,6 +14,13 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        PaceSharedPreference sharedPreference = new PaceSharedPreference(getApplicationContext());
+        if(sharedPreference.getBooleanValue("isLoggedIn")){
+            Intent intent = new Intent(SplashActivity.this, BloqueryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
 
         findViewById(R.id.signupButton).setOnClickListener(new View.OnClickListener() {
             @Override
