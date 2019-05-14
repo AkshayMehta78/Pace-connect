@@ -149,7 +149,7 @@ public class BloqueryActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        mQuestionsReference.removeEventListener(this);
+      //  mQuestionsReference.removeEventListener(this);
     }
 
     @Override
@@ -257,8 +257,21 @@ public class BloqueryActivity extends AppCompatActivity
         intent.putExtra(EXTRA_QUESTION_STRING, questionItem.getQuestionString());
         intent.putExtra(EXTRA_USER__UID, questionItem.getUserId());
 
-        startActivity(intent);
+        startActivityForResult(intent,1000);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data!=null && data.hasExtra("QuestionId")) {
+            String questionId = data.getStringExtra("QuestionId");
+            if (questionId != null && mQuestionAdapter != null) {
+                mQuestionAdapter.deleteQuestion(questionId);
+            }
+        }
+    }
+
 
     @Override
     public void onFinishAddInput(String inputText) {

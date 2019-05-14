@@ -1,5 +1,6 @@
 package com.namclu.android.bloquery.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,8 @@ import com.namclu.android.bloquery.ui.fragment.AddInputDialogFragment;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.namclu.android.bloquery.ui.activity.BloqueryActivity.EXTRA_QUESTION_ID_KEY;
 
 public class SingleQuestionActivity extends AppCompatActivity implements
         ChildEventListener,
@@ -64,7 +67,6 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
         // Get the intent data from BloqueryActivity
         String questionId = getIntent().getStringExtra("question_id_key");
-        String userId = getIntent().getStringExtra("current_ques_user_id");
 
         // Initialise Views
         mQuestionString = (TextView) findViewById(R.id.text_single_question_string);
@@ -104,7 +106,6 @@ public class SingleQuestionActivity extends AppCompatActivity implements
         mAnswersReference = FirebaseDatabase.getInstance().getReference("answers").child(questionId);
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        isOwner = mCurrentUser.getUid().equalsIgnoreCase(userId);
 
         // Set listener on Database
         mAnswersReference.addChildEventListener(this);
@@ -128,10 +129,12 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        String userId = getIntent().getStringExtra("current_ques_user_id");
+        isOwner = mCurrentUser.getUid().equalsIgnoreCase(userId);
         if(isOwner){
             getMenuInflater().inflate(R.menu.single_question, menu);
         }else{
-            getMenuInflater().inflate(R.menu.single_question, menu);
+            getMenuInflater().inflate(R.menu.single_question_owner, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -230,6 +233,9 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
     private void removeQuestion() {
         mQuestionReference.removeValue();
+        Intent previousScreen = new Intent(getApplicationContext(), BloqueryActivity.class);
+        previousScreen.putExtra("QuestionId",getIntent().getStringExtra(EXTRA_QUESTION_ID_KEY));
+        setResult(1000, previousScreen);
         finish();
     }
 

@@ -16,11 +16,14 @@ import com.namclu.android.bloquery.ui.activity.BloqueryActivity;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionAdapterViewHolder> {
+
 
 
 
@@ -41,6 +44,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
 
     public void addQuestion(Question question) {
         mQuestions.add(question);
+        Collections.reverse(mQuestions);
         notifyDataSetChanged();
     }
 
@@ -138,5 +142,21 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     public void updateItemInList(int position, boolean isLiked) {
         mQuestions.get(position).isLiked = isLiked;
         notifyItemChanged(position);
+    }
+
+    public void deleteQuestion(String questionId) {
+        int pos = -1;
+        int id = 0;
+        for(Question q : mQuestions){
+            if(q.getQuestionId().equalsIgnoreCase(questionId)){
+                pos = id;
+            }
+            id++;
+        }
+
+        if(pos!=-1){
+            mQuestions.remove(pos);
+            notifyDataSetChanged();
+        }
     }
 }
