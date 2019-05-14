@@ -11,39 +11,41 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/default_padding"
         android:layout_gravity="center"
-        android:textColor="@color/black_87"
-        android:textSize="@dimen/text_size_18"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_36"
         android:text="Add a Question"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_below="@+id/title"
         android:layout_height="1dp"
-        android:background="@color/black_87"></View>
+        android:background="@color/grey"></View>
 
     <EditText
         android:id="@+id/field_add_input"
         android:layout_below="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="4"
+        android:minLines="6"
         android:maxLines="8"
+        android:layout_marginTop="10dp"
         android:inputType="textMultiLine"
         android:padding="@dimen/default_padding"
         android:gravity="top"
+        android:background="@null"
+        android:textSize="24dp"
         android:hint="Example: What are the fees options available for International students?"
         android:imeOptions="actionDone" />
 
     <!-- Login Button -->
     <android.support.v7.widget.AppCompatButton
-        android:layout_below="@+id/field_add_input"
         android:id="@+id/postButton"
-        style="@style/PaddingButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
         android:text="@string/action_post"/>
 
 

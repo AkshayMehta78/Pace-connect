@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.namclu.android.bloquery.R;
 import com.namclu.android.bloquery.api.model.Question;
+import com.namclu.android.bloquery.ui.activity.BloqueryActivity;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -20,8 +22,11 @@ import java.util.List;
 
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionAdapterViewHolder> {
 
+
+
     public static interface QuestionAdapterDelegate {
         public void onItemClicked(int position, List<Question> queries);
+        public void onLikedClicked(int position,Question question);
     }
 
     /* private fields */
@@ -74,10 +79,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     class QuestionAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Reference to Question items
-        TextView questionString,noOfAnswersTextView;
+        TextView questionString,statusTextView;
         TextView timeStamp;
-        TextView numAnswers;
-        ImageView userImage;
+        ImageView likedStatusImageView;
+        LinearLayout likedStatusLayout;
 
         int position;
 
@@ -86,9 +91,16 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             super(itemView);
             questionString = (TextView) itemView.findViewById(R.id.text_question_string);
             timeStamp = (TextView) itemView.findViewById(R.id.text_question_time_stamp);
-            numAnswers = (TextView) itemView.findViewById(R.id.text_question_number_of_answers);
-            userImage = (ImageView) itemView.findViewById(R.id.image_question_user_image);
-            noOfAnswersTextView = itemView.findViewById(R.id.noOfAnswersTextView);
+            likedStatusImageView = itemView.findViewById(R.id.likedStatusImageView);
+            statusTextView = itemView.findViewById(R.id.statusTextView);
+            likedStatusLayout = itemView.findViewById(R.id.likedStatusLayout);
+
+            likedStatusLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDelegate.get().onLikedClicked(position,mQuestions.get(position));
+                }
+            });
             itemView.setOnClickListener(this);
         }
 
@@ -96,10 +108,16 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
 
             this.position = position;
 
-            questionString.setText(question.getQuestionString());
+            questionString.setText(question.getQuestionString().trim());
             timeStamp.setText("Submitted: " + formatDate(new Date(question.getTimeStamp())));
-            numAnswers.setText("Number of answers: " + question.getNumberOfAnswers());
-            noOfAnswersTextView.setText("Answers : "+ question.getNumberOfAnswers());
+
+            if(question.isLiked){
+                likedStatusImageView.setImageResource(R.drawable.ic_liked);
+                statusTextView.setText("Liked");
+            }else{
+                likedStatusImageView.setImageResource(R.drawable.ic_not_liked);
+                statusTextView.setText("Like");
+            }
         }
 
         // Return a formatted date string (i.e. 1 Jan, 2000 ) from a Date object.
@@ -115,5 +133,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
                 getQuestionAdapterDelegate().onItemClicked(position, mQuestions);
             }
         }
+    }
+
+    public void updateItemInList(int position, boolean isLiked) {
+        mQuestions.get(position).isLiked = isLiked;
+        notifyItemChanged(position);
     }
 }

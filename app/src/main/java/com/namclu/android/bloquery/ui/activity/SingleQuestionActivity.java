@@ -26,6 +26,7 @@ import com.namclu.android.bloquery.api.model.Answer;
 import com.namclu.android.bloquery.ui.adapter.AnswerAdapter;
 import com.namclu.android.bloquery.ui.fragment.AddInputDialogFragment;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
     /* Constants */
     public static final String TAG = "SingleQuestionActivity";
+    public static final String TAG_UPDATE = "SingleEditActivity";
 
     private TextView mQuestionString;
 
@@ -48,6 +50,8 @@ public class SingleQuestionActivity extends AppCompatActivity implements
     private FirebaseUser mCurrentUser;
     private Long numberOfAnswers;
 
+    private boolean isOwner = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,6 +64,7 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
         // Get the intent data from BloqueryActivity
         String questionId = getIntent().getStringExtra("question_id_key");
+        String userId = getIntent().getStringExtra("current_ques_user_id");
 
         // Initialise Views
         mQuestionString = (TextView) findViewById(R.id.text_single_question_string);
@@ -72,6 +77,7 @@ public class SingleQuestionActivity extends AppCompatActivity implements
                 if(dataSnapshot.getKey().equalsIgnoreCase("numberOfAnswers")){
                     numberOfAnswers = (Long)dataSnapshot.getValue();
                 }
+
             }
 
             @Override
@@ -95,9 +101,10 @@ public class SingleQuestionActivity extends AppCompatActivity implements
             }
         });
 
-
         mAnswersReference = FirebaseDatabase.getInstance().getReference("answers").child(questionId);
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        isOwner = mCurrentUser.getUid().equalsIgnoreCase(userId);
 
         // Set listener on Database
         mAnswersReference.addChildEventListener(this);
@@ -108,6 +115,7 @@ public class SingleQuestionActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAnswerAdapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override
@@ -120,7 +128,11 @@ public class SingleQuestionActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.single_question, menu);
+        if(isOwner){
+            getMenuInflater().inflate(R.menu.single_question, menu);
+        }else{
+            getMenuInflater().inflate(R.menu.single_question, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -182,6 +194,18 @@ public class SingleQuestionActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onFinishEditInput(String answer, String questionId, String answerId) {
+        if (answer.isEmpty()) {
+            Toast.makeText(this, "Please enter an answer...", Toast.LENGTH_SHORT).show();
+        } else {
+            Map<String,Object> taskMap = new HashMap<String,Object>();
+            taskMap.put("answerString", answer);
+            mAnswersReference.child(answerId).updateChildren(taskMap);
+            mAnswerAdapter.updateAnswerInList(answerId,answer);
+        }
+    }
+
     private void updateAnswerCountInQuestion() {
         numberOfAnswers = numberOfAnswers + 1;
         Map<String,Object> taskMap = new HashMap<String,Object>();
@@ -207,5 +231,12 @@ public class SingleQuestionActivity extends AppCompatActivity implements
     private void removeQuestion() {
         mQuestionReference.removeValue();
         finish();
+    }
+
+    public void updateAnswer(Answer answer) {
+        String questionId = getIntent().getStringExtra("question_id_key");
+        FragmentManager fm = getSupportFragmentManager();
+        AddInputDialogFragment addInputDialogFragment = AddInputDialogFragment.newInstance(questionId,answer);
+        addInputDialogFragment.show(fm, TAG_UPDATE);
     }
 }

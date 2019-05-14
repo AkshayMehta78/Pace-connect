@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,56 +12,41 @@
         android:id="@+id/toolbar_single_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"/>
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <!-- Question resides at the top -->
-    <TextView
-        android:id="@+id/text_single_question_user_email"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="your_name@email.com asks..."/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_single_question_string"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_18"
-        android:textColor="@color/black_87"
-        android:padding="@dimen/default_padding"
-        tools:text="What is your question?"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_single_question_time_stamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Submitted: 1 Jan 2015"/>
+            <TextView
+                android:id="@+id/text_single_question_string"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_36"
+                tools:text="What is your question?" />
 
-    <TextView
-        android:id="@+id/text_single_question_num_answers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:text="5 answers"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
 
-    <ImageView
-        android:id="@+id/image_single_question_user_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:src="@android:drawable/star_big_on"/>
+            <!-- Answers reside below the Question -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_answers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"/>
-
-    <!-- Answers reside below the Question -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_answers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
-
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

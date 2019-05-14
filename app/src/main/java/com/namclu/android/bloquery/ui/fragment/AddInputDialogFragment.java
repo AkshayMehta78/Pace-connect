@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.namclu.android.bloquery.R;
+import com.namclu.android.bloquery.api.model.Answer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,13 +29,30 @@ import com.namclu.android.bloquery.R;
  */
 public class AddInputDialogFragment extends DialogFragment implements TextView.OnEditorActionListener {
 
+    private static final String TAG_UPDATE = "SingleEditActivity";
     private EditText mEditText;
     private TextView mTitle;
     private AppCompatButton postButton;
+    private Bundle mBundle;
+    private boolean isEdit = false;
+
+    public static AddInputDialogFragment newInstance(String questionId, Answer answer) {
+        AddInputDialogFragment fragment = new AddInputDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("questionId", questionId);
+        args.putString("answerId", answer.getAnswerId());
+        args.putString("answer", answer.getAnswerString());
+        args.putString("tag",TAG_UPDATE);
+        args.putBoolean("isEdit",true);
+
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     // Listener interface with a method passing back data result.
     public interface AddInputDialogListener {
         void onFinishAddInput(String inputText);
+        void onFinishEditInput(String inputText,String questionId,String answerId);
     }
 
     public AddInputDialogFragment() {
@@ -55,16 +73,26 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBundle = getArguments();
+        if(mBundle!=null && mBundle.containsKey("isEdit") ){
+            isEdit = mBundle.getBoolean("isEdit");
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         // Get field from view
         mEditText = (EditText) view.findViewById(R.id.field_add_input);
         mTitle = (TextView) view.findViewById(R.id.title);
 
-        mTitle.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Add a Question ":"Add a Response");
+        mTitle.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Add a Question ":isEdit ? "Edit Response":"Add a Response");
         postButton = (AppCompatButton) view.findViewById(R.id.postButton);
 
-        postButton.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Post Question ":"Post Response");
+        postButton.setText(getTag().equalsIgnoreCase("BloqueryActivity")?"Post Question ":isEdit ? "Save Response":"Post Response");
 
         // Fetch arguments from bundle and set question
         String title = getArguments().getString("question", "Enter question");
@@ -83,12 +111,22 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
             public void onClick(View view) {
                 // Return input text back to activity through the implemented listener
                 AddInputDialogListener listener = (AddInputDialogListener) getActivity();
-                listener.onFinishAddInput(mEditText.getText().toString());
+                if(isEdit){
+                    listener.onFinishEditInput(mEditText.getText().toString(),mBundle.getString("questionId"),mBundle.getString("answerId"));
+                }else{
+                    listener.onFinishAddInput(mEditText.getText().toString());
+                }
 
                 // Close the dialog and return back to the parent activity
                 dismiss();
             }
         });
+
+        if(mBundle!=null && mBundle.containsKey("tag") && mBundle.getString("tag").equalsIgnoreCase(TAG_UPDATE)){
+            String answer = mBundle.getString("answer");
+            mEditText.setText(answer);
+            mEditText.setSelection(answer.length());
+        }
     }
 
     // Fires when the "Done" button is pressed
@@ -97,8 +135,11 @@ public class AddInputDialogFragment extends DialogFragment implements TextView.O
         if (EditorInfo.IME_ACTION_DONE == actionId) {
             // Return input text back to activity through the implemented listener
             AddInputDialogListener listener = (AddInputDialogListener) getActivity();
-            listener.onFinishAddInput(mEditText.getText().toString());
-
+            if(isEdit){
+                listener.onFinishEditInput(mEditText.getText().toString(),mBundle.getString("questionId"),mBundle.getString("answerId"));
+            }else{
+                listener.onFinishAddInput(mEditText.getText().toString());
+            }
             // Close the dialog and return back to the parent activity
             dismiss();
             return true;

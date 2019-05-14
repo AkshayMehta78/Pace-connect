@@ -55,6 +55,7 @@ public class BloqueryActivity extends AppCompatActivity
     public static final String EXTRA_QUESTION_ID_KEY = "question_id_key";
     public static final String EXTRA_QUESTION_STRING = "question_string";
     public static final String EXTRA_CURRENT_USER = "current_user_email";
+    public static final String EXTRA_USER__UID = "current_ques_user_id";
 
     private QuestionAdapter mQuestionAdapter;
     private RecyclerView mQueryRecyclerView;
@@ -254,6 +255,7 @@ public class BloqueryActivity extends AppCompatActivity
         Intent intent = new Intent(this, SingleQuestionActivity.class);
         intent.putExtra(EXTRA_QUESTION_ID_KEY, questionId);
         intent.putExtra(EXTRA_QUESTION_STRING, questionItem.getQuestionString());
+        intent.putExtra(EXTRA_USER__UID, questionItem.getUserId());
 
         startActivity(intent);
     }
@@ -275,10 +277,27 @@ public class BloqueryActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onFinishEditInput(String inputText, String questionId, String answerId) {
+
+    }
+
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         AddInputDialogFragment addInputDialogFragment = AddInputDialogFragment.newInstance("Ask a question");
         addInputDialogFragment.show(fm, TAG);
     }
+
+
+    @Override
+    public void onLikedClicked(int position, Question question) {
+        Map<String,Object> taskMap = new HashMap<String,Object>();
+        taskMap.put("isLiked", !question.isLiked);
+        DatabaseReference questionReference =  mQuestionsReference.child(question.getQuestionId());
+        questionReference.updateChildren(taskMap);
+
+        mQuestionAdapter.updateItemInList(position,!question.isLiked);
+    }
+
 
 }

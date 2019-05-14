@@ -25,6 +25,7 @@ public class Question {
     private int mNumberOfAnswers = NO_ANSWERS;
     private String mUserId;
     private int mUserImageResId = NO_IMAGE;
+    public boolean isLiked;
 
     // Creates a no-argument Question object
     public Question() {

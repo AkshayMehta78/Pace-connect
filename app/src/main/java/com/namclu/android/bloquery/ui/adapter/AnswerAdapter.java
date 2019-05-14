@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetMenuDialog;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.namclu.android.bloquery.R;
 import com.namclu.android.bloquery.api.model.Answer;
 import com.namclu.android.bloquery.ui.activity.SingleQuestionActivity;
@@ -26,6 +28,7 @@ import java.util.List;
 
 public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerAdapterViewHolder> {
 
+    private final FirebaseUser mCurrentUser;
     /* Private fields */
     private List<Answer> mAnswers;
 
@@ -36,6 +39,8 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerAdap
     public AnswerAdapter(Activity activity) {
         mAnswers = new ArrayList<>();
         mActivity = activity;
+        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     public void addAnswer(Answer answer) {
@@ -66,6 +71,17 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerAdap
         return mAnswers.size();
     }
 
+    public void updateAnswerInList(String answerId, String answerText) {
+        for(Answer answer : mAnswers){
+            if(answer.getAnswerId() == answerId){
+                answer.setAnswerString(answerText);
+                break;
+            }
+        }
+
+        notifyDataSetChanged();
+    }
+
 
     class AnswerAdapterViewHolder extends RecyclerView.ViewHolder {
 
@@ -90,6 +106,8 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerAdap
                                         ((SingleQuestionActivity)mActivity).removeAnswer(mAnswers.get(position));
                                         mAnswers.remove(position);
                                         notifyDataSetChanged();
+                                    }else if(item.getItemId() == R.id.action_edit){
+                                        ((SingleQuestionActivity)mActivity).updateAnswer(mAnswers.get(position));
                                     }
                                 }
                             })
@@ -103,6 +121,12 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerAdap
         void update(int position, Answer answer) {
             this.position = position;
             answerString.setText(answer.getAnswerString());
+
+            if(mCurrentUser.getUid().equalsIgnoreCase(answer.getUserId())){
+                overFlowMenu.setVisibility(View.VISIBLE);
+            }else{
+                overFlowMenu.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
