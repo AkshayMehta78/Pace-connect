@@ -15,12 +15,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        PaceSharedPreference sharedPreference = new PaceSharedPreference(getApplicationContext());
-        if(sharedPreference.getBooleanValue("isLoggedIn")){
-            Intent intent = new Intent(SplashActivity.this, BloqueryActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
+
 
         findViewById(R.id.signupButton).setOnClickListener(new View.OnClickListener() {
             @Override

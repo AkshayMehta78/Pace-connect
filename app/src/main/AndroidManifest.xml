@@ -25,31 +25,30 @@
         <activity
             android:name=".ui.activity.SignUpActivity"
             android:label="@string/app_name"
-            android:theme="@style/SignUpTheme">
-        </activity>
+            android:theme="@style/SignUpTheme"></activity>
 
         <!-- Login Activity -->
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_login"
-            android:theme="@style/SignUpTheme"></activity>
+            android:theme="@style/SignUpTheme" />
 
         <!-- Bloquery Activity -->
         <activity
             android:name=".ui.activity.BloqueryActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
 
         <!-- Single Question Activity -->
         <activity
             android:name=".ui.activity.SingleQuestionActivity"
             android:label="@string/title_single_question"
-            android:parentActivityName=".ui.activity.BloqueryActivity"></activity>
+            android:parentActivityName=".ui.activity.BloqueryActivity" />
 
         <!-- User Profile Activity -->
         <activity
             android:name=".ui.activity.UserProfileActivity"
             android:label="@string/title_user_profile"
-            android:parentActivityName=".ui.activity.BloqueryActivity"></activity>
+            android:parentActivityName=".ui.activity.BloqueryActivity" />
 
         <!-- Configure the FileProvider -->
         <provider
@@ -62,8 +61,16 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".ui.activity.SplashActivity"
+        <activity
+            android:name=".ui.activity.SplashActivity"
             android:theme="@style/AppTheme">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".ui.activity.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
